@@ -13,14 +13,16 @@ void main() async {
   await sp.loadInstance();
   bool isDark = sp.isDark();
 
-  ThemeData newTheme;
+  ThemeData initialTheme;
   if (isDark != null) {
-    newTheme = isDark ? darkThemeData : lightThemeData;
+    initialTheme = isDark ? darkThemeData : lightThemeData;
   }
 
   runApp(
     ThemeSwitcherWidget(
-      initialTheme: newTheme,
+      initialTheme: initialTheme,
+      lightTheme: lightThemeData,
+      darkTheme: darkThemeData,
       child: MyApp(),
     ),
   );

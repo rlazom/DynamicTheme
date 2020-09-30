@@ -1,6 +1,5 @@
 import 'package:dark_mode/common/services/shared_preferences_service/shared_preferences_service.dart';
 import 'package:flutter/material.dart';
-import 'theme.dart';
 
 
 class ThemeSwitcher extends InheritedWidget {
@@ -26,10 +25,12 @@ class ThemeSwitcher extends InheritedWidget {
 
 class ThemeSwitcherWidget extends StatefulWidget {
   final ThemeData initialTheme;
+  final ThemeData lightTheme;
+  final ThemeData darkTheme;
   final Widget child;
 
-  ThemeSwitcherWidget({Key key, @required this.initialTheme, @required this.child})
-      : assert(child != null),
+  ThemeSwitcherWidget({Key key, this.initialTheme, @required this.child, @required this.lightTheme, @required this.darkTheme})
+      : assert(child != null), assert(lightTheme != null), assert(darkTheme != null),
         super(key: key);
 
   @override
@@ -51,6 +52,11 @@ class _ThemeSwitcherWidgetState extends State<ThemeSwitcherWidget> {
   Future _loadSharedPreferences() async {
     _prefs = new SharedPreferencesService();
     await _prefs.loadInstance();
+    bool isDark = _prefs.isDark();
+    isAuto = isDark == null;
+    if (!isAuto) {
+      themeData = isDark ? widget.darkTheme : widget.lightTheme;
+    }
   }
 
   void switchTheme(BuildContext context) {
@@ -58,15 +64,15 @@ class _ThemeSwitcherWidgetState extends State<ThemeSwitcherWidget> {
     bool darkModeOn = brightness == Brightness.dark;
     bool forceDark = _prefs.isDark();
 
-    var newTheme = darkModeOn ? darkThemeData : lightThemeData;
+    var newTheme = darkModeOn ? widget.darkTheme : widget.lightTheme;
     var isNewThemeDark;
 
     if(forceDark == null) {
-      newTheme = lightThemeData;
+      newTheme = widget.lightTheme;
       isNewThemeDark = false;
     } else {
       if(!forceDark) {
-        newTheme = darkThemeData;
+        newTheme = widget.darkTheme;
         isNewThemeDark = true;
       }
     }
