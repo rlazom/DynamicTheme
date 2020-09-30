@@ -6,17 +6,17 @@ enum SharePrefsAttribute{
 }
 
 class SharedPreferencesService {
-  SharedPreferences prefs;
+  SharedPreferences _prefs;
 
   String _getAttributeStr(SharePrefsAttribute attribute){
     return attribute == SharePrefsAttribute.IS_DARK ? 'is_dark'
         : '';
   }
 
-  Future loadInstance() async => prefs = await SharedPreferences.getInstance();
+  Future loadInstance() async => _prefs = await SharedPreferences.getInstance();
 
-  bool isDark() => prefs.getBool(_getAttributeStr(SharePrefsAttribute.IS_DARK));
-  setIsDark(bool value) => prefs.setBool(_getAttributeStr(SharePrefsAttribute.IS_DARK), value);
+  bool isDark() => _prefs.getBool(_getAttributeStr(SharePrefsAttribute.IS_DARK));
+  setIsDark(bool value) => _prefs.setBool(_getAttributeStr(SharePrefsAttribute.IS_DARK), value);
 
-  clearPref(SharePrefsAttribute attribute) => prefs.remove(_getAttributeStr(attribute));
+  clearPref(SharePrefsAttribute attribute) => _prefs.remove(_getAttributeStr(attribute));
 }
