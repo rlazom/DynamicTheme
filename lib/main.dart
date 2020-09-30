@@ -13,16 +13,14 @@ void main() async {
   await sp.loadInstance();
   bool isDark = sp.isDark();
 
-  ThemeData initialTheme;
+  ThemeMode initialThemeMode;
   if (isDark != null) {
-    initialTheme = isDark ? darkThemeData : lightThemeData;
+    initialThemeMode = isDark ? ThemeMode.dark : ThemeMode.light;
   }
 
   runApp(
     ThemeSwitcherWidget(
-      initialTheme: initialTheme,
-      lightTheme: lightThemeData,
-      darkTheme: darkThemeData,
+      initialThemeMode: initialThemeMode,
       child: MyApp(),
     ),
   );
@@ -35,9 +33,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: title,
-      theme: ThemeSwitcher.of(context).themeData ?? lightThemeData,
-      darkTheme: ThemeSwitcher.of(context).themeData ?? darkThemeData,
-      themeMode: ThemeMode.system,
+      theme: lightThemeData,
+      darkTheme: darkThemeData,
+      themeMode: ThemeSwitcher.of(context).themeMode,
       home: new MyHomePage(title: title,)
     );
   }

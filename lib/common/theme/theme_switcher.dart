@@ -24,13 +24,11 @@ class ThemeSwitcher extends InheritedWidget {
 
 
 class ThemeSwitcherWidget extends StatefulWidget {
-  final ThemeData initialTheme;
-  final ThemeData lightTheme;
-  final ThemeData darkTheme;
+  final ThemeMode initialThemeMode;
   final Widget child;
 
-  ThemeSwitcherWidget({Key key, this.initialTheme, @required this.child, @required this.lightTheme, @required this.darkTheme})
-      : assert(child != null), assert(lightTheme != null), assert(darkTheme != null),
+  ThemeSwitcherWidget({Key key, this.initialThemeMode, @required this.child})
+      : assert(child != null),
         super(key: key);
 
   @override
@@ -38,61 +36,55 @@ class ThemeSwitcherWidget extends StatefulWidget {
 }
 
 class _ThemeSwitcherWidgetState extends State<ThemeSwitcherWidget> {
-  ThemeData themeData;
-  bool isAuto;
+  ThemeMode themeMode;
   SharedPreferencesService _prefs;
 
   @override
   initState() {
     super.initState();
-    isAuto = widget.initialTheme == null;
     _loadSharedPreferences();
   }
 
   Future _loadSharedPreferences() async {
+    themeMode = widget.initialThemeMode;
     _prefs = new SharedPreferencesService();
     await _prefs.loadInstance();
     bool isDark = _prefs.isDark();
-    isAuto = isDark == null;
-    if (!isAuto) {
-      themeData = isDark ? widget.darkTheme : widget.lightTheme;
+    if (isDark != null) {
+      themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
     }
   }
 
-  void switchTheme(BuildContext context) {
-    var brightness = MediaQuery.of(context).platformBrightness;
-    bool darkModeOn = brightness == Brightness.dark;
+  void switchTheme() {
     bool forceDark = _prefs.isDark();
 
-    var newTheme = darkModeOn ? widget.darkTheme : widget.lightTheme;
+    var newThemeMode = ThemeMode.system;
     var isNewThemeDark;
 
     if(forceDark == null) {
-      newTheme = widget.lightTheme;
+      newThemeMode = ThemeMode.light;
       isNewThemeDark = false;
     } else {
       if(!forceDark) {
-        newTheme = widget.darkTheme;
+        newThemeMode = ThemeMode.dark;
         isNewThemeDark = true;
       }
     }
 
     if(isNewThemeDark == null) {
-      isAuto = true;
       _prefs.clearPref(SharePrefsAttribute.IS_DARK);
     } else {
-      isAuto = false;
       _prefs.setIsDark(isNewThemeDark);
     }
 
     setState(() {
-      themeData = newTheme;
+      themeMode = newThemeMode;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    themeData = themeData ?? widget.initialTheme;
+    themeMode = themeMode ?? ThemeMode.system;
     return ThemeSwitcher(
       data: this,
       child: widget.child,

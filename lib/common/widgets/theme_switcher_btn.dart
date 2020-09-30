@@ -1,25 +1,22 @@
 import 'package:flutter/material.dart';
-
 import '../theme/theme_switcher.dart';
-import 'circle_icon_button.dart';
 
 class ThemeSwitcherBtn extends StatelessWidget {
 
   IconData _getIcon(BuildContext context) {
-    IconData icon = Icons.brightness_auto;
-    bool isAutoThemeData = ThemeSwitcher.of(context).isAuto;
-    if(!isAutoThemeData) {
-      var themeData = ThemeSwitcher.of(context).themeData;
-      icon = themeData.brightness == Brightness.light ? Icons.brightness_high : Icons.brightness_4 ;
-    }
-    return icon;
+    var themeMode = ThemeSwitcher.of(context).themeMode;
+    return themeMode == ThemeMode.system ? Icons.brightness_auto : themeMode == ThemeMode.light ? Icons.brightness_high : Icons.brightness_4;
   }
 
   @override
   Widget build(BuildContext context) {
-    return CircleIconButton(
-      fn: (){ThemeSwitcher.of(context).switchTheme(context);},
-      icon: _getIcon(context),
+    return RawMaterialButton(
+      shape: CircleBorder(),
+      onPressed: (){ThemeSwitcher.of(context).switchTheme();},
+      child: new Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: new Icon(_getIcon(context), color: Theme.of(context).textTheme.button.color),
+      ),
     );
   }
 }
