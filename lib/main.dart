@@ -7,20 +7,8 @@ import 'common/theme/theme.dart';
 
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  SharedPreferencesService sp = new SharedPreferencesService();
-  await sp.loadInstance();
-  bool isDark = sp.isDark();
-
-  ThemeMode initialThemeMode;
-  if (isDark != null) {
-    initialThemeMode = isDark ? ThemeMode.dark : ThemeMode.light;
-  }
-
   runApp(
     EasyDynamicThemeWidget(
-      initialThemeMode: initialThemeMode,
       child: MyApp(),
     ),
   );
